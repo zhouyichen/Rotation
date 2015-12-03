@@ -24,6 +24,32 @@ function getQuatFromPoint(point_x, point_y, point_z) {
 	return [0, point_x, point_y, point_z];
 }
 
+function conjugate(quat) {
+	out = [0, 0, 0, 0];
+	out[0] = quat[0];
+	out[1] = -quat[1];
+	out[2] = -quat[2];
+	out[3] = -quat[3];
+	return out;
+}
+
+function quatMult(q1, q2) {
+	out = [0, 0, 0, 0];
+	out[0] = q1[0]*q2[0] - q1[1]*q2[1] - q1[2]*q2[2] - q1[3]*q2[3];
+	out[1] = q1[0]*q2[1] + q1[1]*q2[0] + q1[2]*q2[3] - q1[3]*q2[2];
+	out[2] = q1[0]*q2[2] - q1[1]*q2[3] + q1[2]*q2[0] + q1[3]*q2[1];
+	out[3] = q1[0]*q2[3] + q1[1]*q2[2] - q1[2]*q2[1] + q1[3]*q2[0];
+	return out;
+}
+
+function quatRotate(p, q){
+	return quatMult(quatMult(q, p), conjugate(q));
+}
+
+function getPointFromQuat(q) {
+	return [q[1], q[2], q[3]];
+}
+
 $(function() {
 	$('#calculate').mousedown(function () {
 		var axis_x = get_and_validate('#axis-x');
@@ -38,7 +64,7 @@ $(function() {
 
 		var rotation_q = getRotationQuat(axis_x, axis_y, axis_z, angle);
 		var point_q = getQuatFromPoint(point_x, point_y, point_z);
-		console.log(rotation_q, point_q);
-
+		var result_q = quatRotate(point_q, rotation_q);
+		var point = getPointFromQuat(result_q);
 	});
 });
