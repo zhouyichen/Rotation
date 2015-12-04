@@ -50,6 +50,11 @@ function getPointFromQuat(q) {
 	return [q[1], q[2], q[3]];
 }
 
+function displayResult(point) {
+	var result = 'Result: ';
+	$('#result').html(result + point[0] + ', ' + point[1] + ', ' + point[2]);
+}
+
 $(function() {
 	$('#calculate').mousedown(function () {
 		var axis_x = get_and_validate('#axis-x');
@@ -66,5 +71,6 @@ $(function() {
 		var point_q = getQuatFromPoint(point_x, point_y, point_z);
 		var result_q = quatRotate(point_q, rotation_q);
 		var point = getPointFromQuat(result_q);
+		displayResult(point);
 	});
 });
